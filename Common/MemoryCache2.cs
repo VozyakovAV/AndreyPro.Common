@@ -29,7 +29,7 @@ namespace AndreyPro.Common
         /// Если его нет, то вызывается функция func, записывается в кеш значение, и возвращается
         /// Обеспечивает lock по ключу
         /// </summary>
-        public object GetOrAddConcurrent(string key, Func<object> func)
+        public T GetOrAddConcurrent<T>(string key, Func<T> func)
         {
             return GetOrAddConcurrentImpl(key, func, (c, v) => Set(key, v, new CacheItemPolicy()));
         }
@@ -40,12 +40,12 @@ namespace AndreyPro.Common
         /// Обеспечивает lock по ключу
         /// <param name="timeExpiration"></param>
         /// </summary>
-        public object GetOrAddConcurrent(string key, int timeExpirationMs, Func<object> func)
+        public T GetOrAddConcurrent<T>(string key, int timeExpirationMs, Func<T> func)
         {
             return GetOrAddConcurrentImpl(key, func, (c, v) => Set(key, v, DateTime.Now.AddMilliseconds(timeExpirationMs)));
         }
 
-        private object GetOrAddConcurrentImpl(string key, Func<object> func, Action<MemoryCache, object> actionSetCache)
+        private T GetOrAddConcurrentImpl<T>(string key, Func<T> func, Action<MemoryCache, object> actionSetCache)
         {
             var value = Get(key);
             if (value == null)
@@ -61,7 +61,10 @@ namespace AndreyPro.Common
                     }
                 }
             }
-            return value;
+
+            if (value is T res)
+                return res;
+            return default;
         }
     }
 }

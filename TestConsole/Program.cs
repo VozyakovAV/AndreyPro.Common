@@ -1,5 +1,6 @@
 ﻿using AndreyPro.Common;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestConsole
@@ -8,8 +9,8 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            Run();
-            Run();
+            //Run();
+            //Run();
             
             Task.Run(Run);
             Task.Run(Run);
@@ -21,8 +22,8 @@ namespace TestConsole
             var key = "1";
             var t = MemoryCache2.Instance.GetOrAddConcurrent(key, () =>
             {
-                //Thread.Sleep(10000);
-                return new object();
+                Thread.Sleep(10000);
+                return 1;
             });
             var t1 = MemoryCache2.Instance.Get(key);
             var t2 = MemoryCache2.Instance.Get(key, "1");
