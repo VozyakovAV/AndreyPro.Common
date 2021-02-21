@@ -1,7 +1,6 @@
 ﻿using AndreyPro.Common;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace TestConsole
 {
@@ -9,12 +8,25 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            //Run();
-            //Run();
-            
-            Task.Run(Run);
-            Task.Run(Run);
+            TestList();
             Console.ReadKey();
+        }
+
+        static void TestList()
+        {
+            var list = new DictionaryWrapper<int, int>((x) => x);
+            list.Modify += (t, x) =>
+            {
+
+            };
+            list.AddOrUpdate(1);
+            list.AddOrUpdate(2);
+            list.AddOrUpdate(1);
+            list.RemoveByKey(1);
+            foreach (var item in list)
+            {
+
+            }
         }
 
         static void Run()
