@@ -8,7 +8,8 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            TestList();
+            //TestList();
+            Run();
             Console.ReadKey();
         }
 
@@ -38,8 +39,6 @@ namespace TestConsole
                 return 1;
             });
             var t1 = MemoryCache2.Instance.Get(key);
-            var t2 = MemoryCache2.Instance.Get(key, "1");
-            var t3 = MemoryCache2.Instance.Get(key, "2");
         }
     }
 }

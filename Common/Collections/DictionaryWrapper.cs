@@ -38,6 +38,27 @@ namespace AndreyPro.Common
                 _items.Clear();
         }
 
+        /// <summary>
+        /// Добавить в коллекцию если нет такого.
+        /// </summary>
+        /// <returns>true - если добавлено</returns>
+        public virtual bool Add(TValue value)
+        {
+            lock (SyncObj)
+            {
+                var key = _identifier(value);
+                if (_items.TryAdd(key, value))
+                {
+                    Modify?.Invoke(ModifyType.Added, value);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Добавить в коллекцию если нет такого или обновить существующий.
+        /// </summary>
         public virtual void AddOrUpdate(TValue value)
         {
             lock (SyncObj)
@@ -58,6 +79,9 @@ namespace AndreyPro.Common
             }
         }
 
+        /// <summary>
+        /// Добавить в коллекцию если нет такого или обновить существующий.
+        /// </summary>
         public virtual void AddOrUpdate(IEnumerable<TValue> values)
         {
             lock (SyncObj)
@@ -67,6 +91,9 @@ namespace AndreyPro.Common
             }
         }
 
+        /// <summary>
+        /// Удалить по ключу
+        /// </summary>
         public virtual void RemoveByKey(TKey key)
         {
             lock (SyncObj)
@@ -76,6 +103,9 @@ namespace AndreyPro.Common
             }
         }
 
+        /// <summary>
+        /// Удалить по значению
+        /// </summary>
         public virtual void RemoveByValue(TValue value)
         {
             lock (SyncObj)
@@ -89,6 +119,18 @@ namespace AndreyPro.Common
         {
             lock (SyncObj)
                 return _items.ContainsKey(key);
+        }
+
+        public virtual TValue GetOrAdd(TKey key, Func<TKey, TValue> func)
+        {
+            lock (SyncObj)
+            {
+                if (_items.TryGetValue(key, out var value))
+                    return value;
+                value = func(key);
+                _items.TryAdd(key, value);
+                return value;
+            }    
         }
 
         public virtual bool TryGetValue(TKey key, out TValue value)
